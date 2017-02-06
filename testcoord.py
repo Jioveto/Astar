@@ -2,32 +2,32 @@ from coord import Coord
 
 c = Coord(3, 4)
 if c.y == 4:
-  print "PASS"
+	print "PASS"
 
 if c[1] == 4:
-  print "PASS"
+	print "PASS"
 
 try:
-  print c[2]
-  print "FAIL"
+	print c[2]
+	print "FAIL"
 except ValueError as e:
-  print "PASS"
+	print "PASS"
 
 c = Coord([3, 4])
 if c.y == 4:
-  print "PASS"
+	print "PASS"
 
 c = Coord((3, 4))
 if c.x == 3:
-  print "PASS"
+	print "PASS"
 
 c[0] = 7
 if c.x == 7:
-  print "PASS"
+	print "PASS"
 
 if str(c) == "(7, 4)":
-  print "PASS"
+	print "PASS"
 
 d = Coord(c)
 if d.x == c.x:
-  print "PASS"
+	print "PASS"
