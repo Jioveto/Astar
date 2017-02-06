@@ -1,11 +1,22 @@
 import numpy as np
 from coord import Coord
+import pygame
+
+# initialize the displayer
+pygame.init()
 
 class GridMap: # embedding cost 
-	def __init__(self, _width = 16, _height = 12):
+	def __init__(self, _width = 16, _height = 12, _grid = None):
 		self.width = _width
 		self.height = _height
-		self.grid = [["1" for i in range(self.width)] for j in range(self.height)]
+		if _grid == None:
+			self.grid = [["1" for i in range(self.width)] for j in range(self.height)]
+		else:
+			self.grid = _grid
+
+		# display stuff
+		self.screen = None
+		self.clock = None
 
 	def getCost(self, pos1, pos2, heuristic = "euc"):
 		"""
@@ -67,6 +78,10 @@ class GridMap: # embedding cost
 			return 0.25
 		elif symbol == "b":
 			return 0.5
+		elif symbol == "s":
+			return 0
+		elif symbol == "g":
+			return 1 # careful! documentation does not indicate what this is
 		else:
 			return None
 
@@ -99,8 +114,60 @@ class GridMap: # embedding cost
 	def __str__(self):
 		return str(np.matrix(self.grid)) + "\n"
 	def display(self):
-		# fill in later
-		pass
+		idealsize = (640, 480)
+		ratio = (idealsize[0] / self.width, idealsize[0] / self.width)
+		w = int(ratio[0]) * self.width
+		h = int(ratio[1]) * self.height
+
+		if self.screen == None:
+			self.screen = pygame.display.set_mode((w, h))
+		if self.clock == None:
+			self.clock = pygame.time.Clock()
+		if self.handleEvents() == False: # handle any events, such as closing the window
+			return False
+		self.screen.fill((255, 255, 255))
+
+		color_regular = (0, 255, 255)
+		color_regular_slow = (0, 0, 255)
+		color_highway = (0, 255, 0)
+		color_highway_slow = (0, 128, 0)
+		color_start = (255, 0, 0)
+		color_goal = (255, 0, 255)
+		color_block = (0, 0, 0)
+
+		# draw the grid
+		for x in range(self.width):
+			for y in range(self.height):
+				region = pygame.Rect(x * ratio[0], y * ratio[1], ratio[0], ratio[1])
+				color = color_block
+				if self.grid[y][x] == "1":
+					color = color_regular
+				elif self.grid[y][x] == "2":
+					color = color_regular_slow
+				elif self.grid[y][x] == "a":
+					color = color_highway
+				elif self.grid[y][x] == "b":
+					color = color_highway_slow
+				elif self.grid[y][x] == "s":
+					color = color_start
+				elif self.grid[y][x] == "g":
+					color = color_goal
+				pygame.draw.rect(self.screen, color, region)
+
+		# display the grid
+		pygame.display.flip()
+		self.clock.tick(40) # 40 fps
+		return True
+
+	def handleEvents(self):
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				self.screen = None
+				self.clock = None
+				return False
+		return True
 	def close(self):
-		# fill in later, closes display()
-		pass
+		pygame.quit()
+		self.screen = None
+		self.clock = None
