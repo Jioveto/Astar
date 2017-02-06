@@ -1,9 +1,7 @@
 import numpy as np
 from coord import Coord
-import pygame
-
-# initialize the displayer
-pygame.init()
+import numpy as np
+from matplotlib import pyplot as plt
 
 class GridMap: # embedding cost 
 	def __init__(self, _width = 16, _height = 12, _grid = None):
@@ -15,8 +13,7 @@ class GridMap: # embedding cost
 			self.grid = _grid
 
 		# display stuff
-		self.screen = None
-		self.clock = None
+		self.figurecreated = False
 
 	def getCost(self, pos1, pos2, heuristic = "euc"):
 		"""
@@ -30,7 +27,7 @@ class GridMap: # embedding cost
 		if not self.withinBounds(pos1) or not self.withinBounds(pos2) or \
 				not self.validTransition(pos1, pos2):
 			return None
-		weight = (sym2weight(grid[pos1]) + sym2weight(grid[pos2])) / 2 # find the average weight
+		weight = (self.sym2weight(grid[pos1]) + self.sym2weight(grid[pos2])) / 2 # find the average weight
 		if heuristic == "man":
 			return weight * (abs(pos1.x - pos2.x) + abs(pos1.y - pos2.y))
 		elif heuristic == "euc":
@@ -79,9 +76,9 @@ class GridMap: # embedding cost
 		elif symbol == "b":
 			return 0.5
 		elif symbol == "s":
-			return 0
+			return 1.5
 		elif symbol == "g":
-			return 1 # careful! documentation does not indicate what this is
+			return 1.75 # careful! documentation does not indicate what this is
 		else:
 			return None
 
@@ -114,60 +111,32 @@ class GridMap: # embedding cost
 	def __str__(self):
 		return str(np.matrix(self.grid)) + "\n"
 	def display(self):
-		idealsize = (640, 480)
-		ratio = (idealsize[0] / self.width, idealsize[0] / self.width)
-		w = int(ratio[0]) * self.width
-		h = int(ratio[1]) * self.height
+		image = np.array([[0.0 for x in range(self.width)] for y in range(self.height)])
 
-		if self.screen == None:
-			self.screen = pygame.display.set_mode((w, h))
-		if self.clock == None:
-			self.clock = pygame.time.Clock()
-		if self.handleEvents() == False: # handle any events, such as closing the window
-			return False
-		self.screen.fill((255, 255, 255))
-
-		color_regular = (0, 255, 255)
-		color_regular_slow = (0, 0, 255)
-		color_highway = (0, 255, 0)
-		color_highway_slow = (0, 128, 0)
-		color_start = (255, 0, 0)
-		color_goal = (255, 0, 255)
-		color_block = (0, 0, 0)
-
-		# draw the grid
 		for x in range(self.width):
 			for y in range(self.height):
-				region = pygame.Rect(x * ratio[0], y * ratio[1], ratio[0], ratio[1])
-				color = color_block
-				if self.grid[y][x] == "1":
-					color = color_regular
-				elif self.grid[y][x] == "2":
-					color = color_regular_slow
-				elif self.grid[y][x] == "a":
-					color = color_highway
-				elif self.grid[y][x] == "b":
-					color = color_highway_slow
-				elif self.grid[y][x] == "s":
-					color = color_start
-				elif self.grid[y][x] == "g":
-					color = color_goal
-				pygame.draw.rect(self.screen, color, region)
+				val = self.grid[y][x]
+				if val == "1":
+					val = 0.2
+				elif val == "2":
+					val = 0.1
+				elif val == "a":
+					val = 0.6
+				elif val == "b":
+					val = 0.5
+				elif val == "s":
+					val = 1.0
+				elif val == "g":
+					val = 0.8
+				else:
+					val = 0.0
+				image[y, x] = val
 
-		# display the grid
-		pygame.display.flip()
-		self.clock.tick(40) # 40 fps
-		return True
+		if not self.figurecreated:
+			self.figurecreated = True
+			plt.figure(1)
+			plt.title("AStar")
 
-	def handleEvents(self):
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				pygame.quit()
-				self.screen = None
-				self.clock = None
-				return False
-		return True
-	def close(self):
-		pygame.quit()
-		self.screen = None
-		self.clock = None
+		plt.imshow(image, interpolation='nearest')
+		plt.colorbar()
+		plt.show()
