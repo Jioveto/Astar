@@ -1,6 +1,9 @@
 class Coord:
 	def __init__(self, X, Y=None):
-		if not (((type(X) == type([]) or type(X) == type((0, 0)) or type(X) == type(self)) and Y == None) or Y != None):
+		if not (((type(X) == type([]) or type(X) == type((0, 0)) or \
+				type(X) == type(self)) and Y == None) or \
+				((type(X) != type([]) and type(X) != type((0, 0)) and \
+				type(X) != type(self)) and Y != None)):
 			raise ValueError("Bad initial params for Coord")
 		if type(X) == type([]) or type(X) == type((0, 0)):
 			if len(X) != 2:
@@ -29,12 +32,19 @@ class Coord:
 			raise ValueError("Index for Coord must be either 0 or 1")
 	def __str__(self):
 		return str((self.x, self.y))
+	def __repr__(self):
+		return str((self.x, self.y))
 	def __cmp__(self, other):
 		dx = self.x - other.x
-		dy = self.y - other.y
-		if (dx + dy) < 0:
+		if dx < 0:
 			return -1
-		elif (dx + dy) > 0:
+		elif dx > 0:
 			return 1
 		else:
-			return 0
+			dy = self.y - other.y
+			if dy < 0:
+				return -1
+			elif dy > 0:
+				return 1
+			else:
+				return 0
