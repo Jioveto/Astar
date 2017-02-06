@@ -17,3 +17,12 @@ class Coord:
       return self.y
     else:
       raise ValueError("Index for Coord must be either 0 or 1")
+  def __setitem__(self, ind, value):
+    if ind == 0:
+      self.x = value
+    elif ind == 1:
+      self.y = value
+    else:
+      raise ValueError("Index for Coord must be either 0 or 1")
+  def __str__(self):
+    return str((self.x, self.y))
