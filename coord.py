@@ -29,3 +29,12 @@ class Coord:
       raise ValueError("Index for Coord must be either 0 or 1")
   def __str__(self):
     return str((self.x, self.y))
+  def __cmp__(self, other):
+    dx = self.x - other.x
+    dy = self.y - other.y
+    if (dx + dy) < 0:
+      return -1
+    elif (dx + dy) > 0:
+      return 1
+    else:
+      return 0
