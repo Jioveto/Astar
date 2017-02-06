@@ -16,3 +16,7 @@ except ValueError as e:
 c = Coord([3, 4])
 if c.y == 4:
   print "PASS"
+
+c == Coord((3, 4))
+if c.x == 3:
+  print "PASS"

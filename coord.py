@@ -1,9 +1,9 @@
 class Coord:
   def __init__(self, X, Y=None):
-    if not ((type(X) == type([]) and Y == None) or Y != None):
+    if not (((type(X) == type([]) or type(X) == type((0, 0))) and Y == None) or Y != None):
       raise ValueError("Bad initial params for Coord")
-    if type(X) == type([]):
-      if (len(X) != 2):
+    if type(X) == type([]) or type(X) == type((0, 0)):
+      if len(X) != 2:
         raise ValueError("Bad initial params for Coord")
       self.x = X[0]
       self.y = X[1]
