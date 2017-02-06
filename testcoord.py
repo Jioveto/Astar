@@ -27,3 +27,7 @@ if c.x == 7:
 
 if str(c) == "(7, 4)":
   print "PASS"
+
+d = Coord(c)
+if d.x == c.x:
+  print "PASS"
