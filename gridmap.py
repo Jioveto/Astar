@@ -111,26 +111,26 @@ class GridMap: # embedding cost
 	def __str__(self):
 		return str(np.matrix(self.grid)) + "\n"
 	def display(self):
-		image = np.array([[0.0 for x in range(self.width)] for y in range(self.height)])
+		image = np.array([[[0.0, 0.0, 0.0] for x in range(self.width)] for y in range(self.height)])
 
 		for x in range(self.width):
 			for y in range(self.height):
 				val = self.grid[y][x]
 				if val == "1":
-					val = 0.2
+					val = [0.0, 0.5, 1.0]
 				elif val == "2":
-					val = 0.1
+					val = [0.3, 0.1, 1.0]
 				elif val == "a":
-					val = 0.6
+					val = [1.0, 1.0, 0.0]
 				elif val == "b":
-					val = 0.5
+					val = [0.5, 1.0, 0.0]
 				elif val == "s":
-					val = 1.0
+					val = [1.0, 0.0, 0.0]
 				elif val == "g":
-					val = 0.8
+					val = [1.0, 1.0, 1.0]
 				else:
-					val = 0.0
-				image[y, x] = val
+					val = [0.0, 0.0, 0.0]
+				image[y, x, :] = val
 
 		if not self.figurecreated:
 			self.figurecreated = True
